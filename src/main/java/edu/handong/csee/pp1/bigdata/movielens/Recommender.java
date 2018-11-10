@@ -155,6 +155,18 @@ public class Recommender
 		//support = # of transactions which contains the set X / total # of transaction
 		//confidence = support of X and Y / support of X
 		//lift = lift(X->Y) = confidence of X to Y / support of Y
+		if(anItemset.size()<1) return 0;
+		
+		for(Integer pred: anItemset) {
+			Integer numBasket_I = freqItemsetsWithSize1.get(pred);
+			
+			if(numBasket_I == null) continue;
+			
+			FrequentItemsetSize2 item = new FrequentItemsetSize2(pred,j) ;
+			Integer numBasket_IJ = freqItemsetsWithSize2.get(item) ; 
+			
+			if(numBasket_IJ == null) continue;
+		}
 		// Compute support, confidence, or lift. Based on their threshold, decide how to predict. Return 1 when metrics are satisfied by threshold, otherwise 0.
 		return 0 ;
 	}
@@ -250,28 +262,11 @@ class FrequentItemsetSize3 implements Comparable
 	FrequentItemsetSize3(Set<Integer> s) {
 		Integer [] elem = s.toArray(new Integer[3]);
 		/* TODO: implement this method */
-		int cache = 0;
+		this.items[0] = elem[0];
+		this.items[1] = elem[1];
+		this.items[2] = elem[2];
 		
-		if(elem[0] > elem[1]) {
-			cache = elem[0];
-			this.items[0] = elem[1];
-		}
-		else {
-			cache = elem[0];
-			this.items[0] = elem[0];
-		}
-		if(cache > elem[2]) {
-			this.items[2] = cache;
-			if(this.items[0] > elem[2]) {
-				cache = this.items[0];
-				this.items[0] = elem[2];
-			}
-			else cache = elem[2];
-		}
-		else this.items[2] = elem[2];
-		
-		this.items[1] = cache;
-		
+		Arrays.sort(this.items);
 		// values in s must be sorted and save into items array
 	}
 
@@ -279,10 +274,9 @@ class FrequentItemsetSize3 implements Comparable
 	public int compareTo(Object obj) {  // this method is used for sorting when using TreeMap
 		/* TODO: implement this method */
 		FrequentItemsetSize3 b = (FrequentItemsetSize3) obj;
-		for(int item : this.items) {
-			for(int comp: b.items) {
-				
-			}
+		for(int i = 0; i < 3; i++) {
+			if(this.items[i] < b.items[i]) return -1;
+			else if(this.items[i] > b.items[i]) return 1;
 		}
 		return 0 ;
 	}
