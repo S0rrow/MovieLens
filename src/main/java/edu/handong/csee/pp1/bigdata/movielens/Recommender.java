@@ -155,18 +155,21 @@ public class Recommender
 		//support = # of transactions which contains the set X / total # of transaction
 		//confidence = support of X and Y / support of X
 		//lift = lift(X->Y) = confidence of X to Y / support of Y
+		int evidence = 0;
+		double confidence = 0;
 		if(anItemset.size()<1) return 0;
 		
 		for(Integer pred: anItemset) {
 			Integer numBasket_I = freqItemsetsWithSize1.get(pred);
 			
 			if(numBasket_I == null) continue;
-			
 			FrequentItemsetSize2 item = new FrequentItemsetSize2(pred,j) ;
 			Integer numBasket_IJ = freqItemsetsWithSize2.get(item) ; 
-			
 			if(numBasket_IJ == null) continue;
+			confidence = numBasket_IJ / numBasket_I;
+			if(confidence >= confidence_threshold_rulesize_2) evidence++;
 		}
+		if(evidence >= min_evidence_3) return 1;
 		// Compute support, confidence, or lift. Based on their threshold, decide how to predict. Return 1 when metrics are satisfied by threshold, otherwise 0.
 		return 0 ;
 	}
